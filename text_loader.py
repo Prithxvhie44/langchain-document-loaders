@@ -1,7 +1,27 @@
-from langchain_community.document_loaders.text_loader import TextLoader
+from langchain_community.document_loaders import TextLoader
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import PromptTemplate
+from dotenv import load_dotenv
+import os
+
+load_dotenv() 
+api_key = os.getenv("GEMINI_API_KEY")   
+model=ChatGoogleGenerativeAI(model="gemini-2.5-flash", api_key=api_key)
 
 loader=TextLoader("cricket.txt", encoding="utf-8")
 
+prompt=PromptTemplate(
+    template="Write a summary for follwoing poem:\n\n{text}\n\n",
+    input_variables=["text"],
+
+)
+
+parser=StrOutputParser()
+
+loader=TextLoader("cricket.txt", encoding="utf-8")
 documents=loader.load()
 
-print(documents)
+chain=prompt|model|parser
+
+print(chain.invoke({"text":documents[0].page_content}))
