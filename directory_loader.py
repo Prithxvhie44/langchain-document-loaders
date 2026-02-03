@@ -11,3 +11,5 @@ docs=loader.lazy_load()
 
 for d in docs:
     print(d.metadata)
+    
+
